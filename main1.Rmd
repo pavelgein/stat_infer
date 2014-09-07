@@ -1,0 +1,60 @@
+---
+title: "Coursera Statistical Inference Class"
+author: "Pavel Gein"
+output:
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+---
+
+```{r echo = FALSE}
+lambda <- 0.2
+num.in.each <- 40
+total.num <- 10000
+```
+
+Generate a exponential distributed numbers (with parametr lambda equals to `lambda`. We will generate a `total.num` rows, each consist of `num.is.each` numbers. Then we calculate their means (by row), and do our analysis.
+
+```{r echo = TRUE}
+
+data <- matrix(rexp(total.num * num.in.each, lambda), nrow = total.num, 
+               byrow = TRUE)
+means <- rowMeans(data)
+
+make_plots <- function (data){
+    par(mfrow = c(2, 1))
+    hist(data)
+    abline(v = 1 / lambda, lwd = 3, col = "red")
+    dty <- density(data)
+    plot(dty$x, dty$y, xlab = "", 
+         ylab = "density", 
+         xlim = c(2, 8),
+         ylim = c(0, 1),
+         type = "n")
+    title(paste("sample mean of", total.num, "obs"))
+    lines(seq(2, 8, length = 100), 
+          dnorm(seq(2, 8, length = 100), mean =  1 / lambda, 
+                sd = 1 / lambda / lambda / num.in.each), 
+          col = "green", lwd = 3)
+  lines(dty$x, dty$y, lwd = 2)
+  abline(v = 1 / lambda, lwd = 3, col = "red")  
+}
+```
+
+
+A variance of this data is `r var(means)`, but the theory says, that the variance should be `r 1 / lambda / lambda / num.in.each `
+
+There is a histogrm of means and dencity plot:
+```{r, echo = TRUE, fig.width=7.5, fig.height = 6}
+   make_plots(means)
+```
+Red lines show a theoretical center and a green curve is normal distribution curve for a mean is equal to `r 1 / lambda` and a standart deviation is equal to `r 1 / lambda / lambda / num.in.each`
+
+
+Estimate a coverage interval:
+```{r echo = TRUE}
+    mean(means) + c(-1, 1) * qnorm(0.975) * sd(means)/sqrt(length(means))
+```
+
+You can find a Rmd file [here](https://github.com/pavelgein/stat_infer)
+
