@@ -3,7 +3,7 @@ title: "Coursera Statistical Inference Class"
 author: "Pavel Gein"
 output:
   pdf_document:
-    fig_caption: yes
+    fig_caption: no
     keep_tex: yes
 ---
 
