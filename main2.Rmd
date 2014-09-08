@@ -19,28 +19,34 @@ Load the data and look in summury of it
 We can see that there is only `r length(unique(ToothGrowth$dose))` different doses and only `r length(unique(ToothGrowth$supp))` different supps.
 
 Divide dataset into groups by dose and supp and calculate mean. Make a plot with different colors for each supp:
+
 ```{r echo = FALSE}
     data <- aggregate(len ~ supp + dose, data = ToothGrowth, FUN = mean)
-   ggplot(data, aes(x = dose, y = len, color = supp)) + geom_point() 
+    ggplot(data, aes(x = dose, y = len, color = supp)) + geom_point() 
 ```
+
 Investigate each group made by supp and dose (we've seen before a mean value of length).
+
 ```{r echo = FALSE}
     g <- ggplot(ToothGrowth, aes(x = len))
     #g  + facet_grid(supp ~ dose) + geom_line()
     ggplot(ToothGrowth, aes(x = len)) + geom_histogram(binwidth = 1) + facet_grid(supp ~ dose)
 ```
 
-Investigate is there a difference beetwen mean value in each subgroup. We will use a T-test for this purpose. We assume that people doesn't change a dose and a supp.
+Investigate is there a difference beetwen mean value in each subgroup. We will use a T-test for this purpose. We assume that people doesn't change a dose and a supp and assume that people were chosen true randomly.
 
 ```{r echo = FALSE}
     un_dose <- unique(ToothGrowth$dose)
     un_supp <- unique(ToothGrowth$supp)
-    #for (supp in un_supp) {
-        for (dose in un_dose) {
-            print(paste("T-test for ", dose, " dose:", sep = ""))
-            data <- ToothGrowth[ToothGrowth$dose == dose, ]
-            print(t.test(len ~ supp, data = data, var.equal = FALSE, paired = FALSE))
-        }
-    #}
+    for (dose in un_dose) {
+        print(paste("T-test for ", dose, " dose:", sep = ""))
+        data <- ToothGrowth[ToothGrowth$dose == dose, ]
+        print(t.test(len ~ supp, data = data, var.equal = FALSE, paired = FALSE))
+    }
+
 ```
+
+We can conclude that there is a difference beetwen different supps.
+
 You can find a Rmd file [here](https://github.com/pavelgein/stat_infer)
+
